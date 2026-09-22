@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Repair and Reuse Patterns</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+    --act: #2a78d6; --research: #eb6834; --watch: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+      --act: #3987e5; --research: #d95926; --watch: #199e70;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --act: #3987e5; --research: #d95926; --watch: #199e70;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 28px 16px 64px; }
+  h1 { font-size: 1.6rem; line-height: 1.2; margin: 0 0 4px; }
+  .sub { color: var(--ink-2); margin: 0 0 20px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 0 0 16px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 13px; color: var(--ink-2); margin-bottom: 8px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .ring-key { width: 14px; height: 14px; border-radius: 50%; border: 1.5px dashed var(--ink); display: inline-block; }
+  .chart-wrap { position: relative; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .axisline { stroke: var(--axis); stroke-width: 1; }
+  .tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .axis-title { fill: var(--ink-2); font-size: 12px; font-weight: 600; }
+  .quad-note { fill: var(--muted); font-size: 11px; }
+  .dot { stroke: var(--surface); stroke-width: 2; cursor: pointer; }
+  .dot:focus-visible { outline: none; stroke: var(--ink); }
+  .challenge-ring { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 3 3; pointer-events: none; }
+  /* Labels sit inside the coloured fill, so they use fixed dark ink (clears 4.5:1 on all three fills in both modes) */
+  .dot-label { fill: #0b0b0b; font-size: 11px; font-weight: 700; pointer-events: none; }
+  .key { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 16px; margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; }
+  .key li { display: flex; gap: 8px; align-items: baseline; cursor: pointer; border-radius: 6px; padding: 2px 4px; }
+  .key li:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); }
+  .key b { font-variant-numeric: tabular-nums; min-width: 22px; }
+  .tooltip { position: absolute; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--border);
+    box-shadow: 0 6px 20px rgba(0,0,0,.14); border-radius: 10px; padding: 10px 12px; font-size: 13px; max-width: 260px; opacity: 0; transition: opacity .1s; }
+  .tooltip.show { opacity: 1; }
+  .tooltip .t-name { font-weight: 700; margin-bottom: 4px; }
+  .tooltip .t-row { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-2); }
+  .tooltip .t-row strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .card h2 { font-size: 1.15rem; margin: 0 0 2px; }
+  .card .change { color: var(--ink-2); margin: 0 0 10px; }
+  .card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 14px 0 6px; }
+  .card ul { margin: 0; padding-left: 18px; }
+  .card li { margin: 3px 0; }
+  .card a { color: inherit; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; border: 1px solid var(--border); color: var(--ink); }
+  .scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0; }
+  .score { border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+  .score .k { font-size: 12px; color: var(--muted); }
+  .score .v { font-size: 1.2rem; font-weight: 700; }
+  .score .why { font-size: 12px; color: var(--ink-2); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; }
+  td.num { font-variant-numeric: tabular-nums; text-align: center; }
+  tr[data-id] { cursor: pointer; }
+  tr[data-id]:hover { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+  .status { font-weight: 600; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  footer { color: var(--muted); font-size: 12px; margin-top: 20px; }
+  @media (max-width: 720px) {
+    .two { grid-template-columns: 1fr; }
+    .scores { grid-template-columns: repeat(2, 1fr); }
+    .table-wrap { overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+
+  <section class="panel" aria-labelledby="map-h">
+    <h2 id="map-h" style="font-size:1rem;margin:0 0 8px">Pattern map</h2>
+    <div class="legend" id="legend"></div>
+    <div class="chart-wrap" id="chart-wrap">
+      <svg id="chart" viewBox="0 0 800 480" role="img" aria-label="Scatter of patterns: momentum against novelty"></svg>
+      <div class="tooltip" id="tooltip" role="status"></div>
+    </div>
+    <ul class="key" id="key"></ul>
+  </section>
+
+  <section class="panel card" id="card" aria-live="polite"></section>
+
+  <section class="panel">
+    <h2 style="font-size:1rem;margin:0 0 8px">All patterns</h2>
+    <div class="table-wrap"><table id="table"></table></div>
+  </section>
+
+  <div class="two">
+    <section class="panel"><h2 style="font-size:1rem;margin:0 0 8px">Assumption check</h2><table id="assumptions"></table></section>
+    <section class="panel"><h2 style="font-size:1rem;margin:0 0 8px">Outliers worth keeping</h2><ul id="outliers" style="margin:0;padding-left:18px"></ul></section>
+  </div>
+
+  <footer id="footer"></footer>
+</main>
+
+<script>
+/* ===== Replace only this object ===================================== */
+const DATA = {
+ "title": "Repair, Reuse & Sharing: Emerging Patterns",
+ "subtitle": "48 signals from a weekly scan, 2025-02 to 2026-09, clustered into 9 patterns. Fictional organisation; real, linked signals.",
+ "footer": "Built with the signal-clustering skill. Riverside Environmental Trust is fictional; every signal is a real, linked source.",
+ "patterns": [
+  {
+   "id": "P1",
+   "name": "Repair vouchers spread, then get rationed",
+   "from": "repair subsidies as one country's experiment (France)",
+   "to": "a tool copied across Europe and now the UK, but repeatedly cut back when budgets bite",
+   "summary": "Repair vouchers are spreading: France's has funded 1.9 million repairs, Berlin's 14,000+, and North London ran the UK's first trial, reaching people on low incomes. Campaigners are now asking the UK government for vouchers and zero VAT on repairs, framed as cost-of-living help. But Austria's scheme came back smaller, Germany rejected a national bonus, and Thuringia's state scheme has ended.",
+   "n": 5,
+   "scores": {
+    "momentum": 4,
+    "spread": 4,
+    "novelty": 3,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "all five signals fall in the later half of the window",
+    "spread": "France, Austria, Germany and the UK; national and city schemes, plus campaigners",
+    "novelty": "known to specialists; new to most UK practitioners",
+    "evidence": "published scheme results and official decisions"
+   },
+   "recommendation": "act",
+   "challenges": [],
+   "signals": [
+    {
+     "date": "2025-12-10",
+     "title": "Austria's repair bonus returns scaled back: €130 cap, no smartphones or bikes",
+     "source": "help.ORF.at",
+     "url": "https://help.orf.at/stories/3233288"
+    },
+    {
+     "date": "2026-01-26",
+     "title": "France's Bonus Réparation passes 1.9 million repairs in three years",
+     "source": "ecosystem",
+     "url": "https://decouvrir.ecosystem.eco/actualites/bonus-reparation-3ans"
+    },
+    {
+     "date": "2026-02-26",
+     "title": "Berlin's repair bonus funds 14,000+ repairs as EU right-to-repair nears",
+     "source": "Yale E360",
+     "url": "https://e360.yale.edu/features/europe-repair-cafes"
+    },
+    {
+     "date": "2026-05-11",
+     "title": "Bundesrat rejects Thuringia's bid for a nationwide German repair bonus",
+     "source": "Deutsche Handwerks Zeitung",
+     "url": "https://www.deutsche-handwerks-zeitung.de/bundesweiter-reparaturbonus-gescheitert-das-tut-sich-in-den-laendern-378638/"
+    },
+    {
+     "date": "2026-07-28",
+     "title": "Repair campaigners ask new PM for zero VAT on repairs and funded repair vouchers",
+     "source": "Restarters Talk",
+     "url": "https://talk.restarters.net/t/dear-andy-burnham/44343"
+    }
+   ],
+   "counter": [
+    {
+     "date": "2026-07-06",
+     "title": "North London Repair Voucher trial results: 1,254 vouchers redeemed",
+     "source": "The Restart Project",
+     "url": "https://therestartproject.org/repair-economy/north-london-repair-voucher-trial-results/",
+     "why": "The UK trial reached low-income households, but only 35% of eligible applicants used their voucher: take-up, not just funding, limits these schemes."
+    }
+   ],
+   "counterNote": "",
+   "next": "Add a local repair voucher to our council asks, framed as cost-of-living help, and point to the North London results. Ask for it to be funded from waste or producer money (see P9), which looks more durable.",
+   "change": "Move to Watch if the UK government rules out vouchers; move up if a second UK waste authority launches one."
+  },
+  {
+   "id": "P3",
+   "name": "England stalls, the devolved nations move",
+   "from": "expecting a national circular-economy plan to set the direction",
+   "to": "a patchwork: Scotland and Wales publish and fund, while England's plan keeps slipping",
+   "summary": "England's Circular Economy Growth Plan has been promised and missed several times. Scotland has published a strategy to 2045, and Wales has funded a network of repair and reuse hubs. Proposals like a textiles producer-responsibility scheme wait on decisions that haven't come. Even in Scotland, specific measures like the cup charge are being pushed back.",
+   "n": 5,
+   "scores": {
+    "momentum": 3,
+    "spread": 2,
+    "novelty": 3,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "a steady run of delays and devolved publications",
+    "spread": "only governments and one delivery body",
+    "novelty": "the scale of the England–devolved gap is under-appreciated",
+    "evidence": "official publications and trade-press reporting of missed dates"
+   },
+   "recommendation": "act",
+   "challenges": [
+    "A4"
+   ],
+   "signals": [
+    {
+     "date": "2025-06-19",
+     "title": "Scottish Government delays decision on single-use cup charge until after 2026 election",
+     "source": "Packaging News",
+     "url": "https://www.packagingnews.co.uk/news/environment/recycling/scottish-government-delays-decision-on-paper-cup-charge-until-after-2026-election-19-06-2025"
+    },
+    {
+     "date": "2025-11-25",
+     "title": "Wales evaluation: £14m Circular Economy Fund exceeded target for repair and reuse hubs",
+     "source": "GOV.WALES",
+     "url": "https://www.gov.wales/repair-and-reuse-activities-evaluation-summary-html"
+    },
+    {
+     "date": "2026-01-28",
+     "title": "WRAP publishes UK textiles EPR blueprint prioritising reuse over recycling",
+     "source": "WRAP",
+     "url": "https://www.wrap.ngo/resources/report/uk-textiles-extended-producer-responsibility-blueprint"
+    },
+    {
+     "date": "2026-03-24",
+     "title": "Scotland publishes Circular Economy Strategy to 2045",
+     "source": "gov.scot",
+     "url": "https://www.gov.scot/publications/circular-economy-strategy-scotland/"
+    },
+    {
+     "date": "2026-04-29",
+     "title": "Frustration grows as Circular Economy Growth Plan delays continue",
+     "source": "letsrecycle.com",
+     "url": "https://www.letsrecycle.com/news/frustration-grows-as-circular-economy-growth-plan-delays-continue/"
+    }
+   ],
+   "counter": [
+    {
+     "date": "2025-07-21",
+     "title": "Product Regulation and Metrology Act 2025 receives Royal Assent",
+     "source": "legislation.gov.uk",
+     "url": "https://www.legislation.gov.uk/ukpga/2025/20",
+     "why": "The Product Regulation and Metrology Act gives ministers powers to copy EU product rules quickly, so England could move fast once it decides to."
+    }
+   ],
+   "counterNote": "",
+   "next": "Plan on local and devolved routes, not a Westminster framework. Use Scotland and Wales as the evidence in our local asks.",
+   "change": "Move to Watch if England publishes its plan with specific repair or sharing commitments and money attached."
+  },
+  {
+   "id": "P4",
+   "name": "Lending and repair move into civic buildings",
+   "from": "standalone, volunteer-run projects in borrowed spaces",
+   "to": "services hosted in libraries, leisure centres, schools and estates, paid for by councils, lottery money and devolved governments",
+   "summary": "Across England and Wales, lending and repair are turning up inside public buildings and public programmes: two Library of Things sites in Southwark leisure centres, a Fixing Factory in a Westminster library hub, a Library of Things in a Derby branch library, Hackney-funded repair cafés run by tenants' associations and a school, and Wales exceeding its target of 80 repair and reuse hubs. Most of it is still small and often volunteer-staffed.",
+   "n": 5,
+   "scores": {
+    "momentum": 3,
+    "spread": 4,
+    "novelty": 2,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "steady trickle of openings throughout the window",
+    "spread": "councils, a devolved government, lottery, charities, schools and tenants' groups",
+    "novelty": "matches what we already assume",
+    "evidence": "mostly official announcements and one government evaluation"
+   },
+   "recommendation": "act",
+   "challenges": [],
+   "signals": [
+    {
+     "date": "2025-04-01",
+     "title": "Library of Things opens two leisure-centre sites in Southwark",
+     "source": "Southwark Council",
+     "url": "https://www.southwark.gov.uk/news/2025/new-sharing-libraries-east-dulwich-and-elephant-and-castle"
+    },
+    {
+     "date": "2025-05-07",
+     "title": "Share Shed wins £252k National Lottery grant for library of things and repair",
+     "source": "Network of Wellbeing",
+     "url": "https://networkofwellbeing.org/2025/05/07/share-shed-awarded-national-lottery-grant-to-help-communities-share-repair-and-thrive/"
+    },
+    {
+     "date": "2026-03-20",
+     "title": "Restart opens Fixing Factories inside a library hub and a sewing project",
+     "source": "The Restart Project",
+     "url": "https://therestartproject.org/news/were-opening-two-new-fixing-factories-in-barking-and-victoria/"
+    },
+    {
+     "date": "2026-08-17",
+     "title": "Derby opens volunteer-run Library of Things in a public library",
+     "source": "Derby City Council",
+     "url": "https://derby.gov.uk/news/2026/august/derbys-new-library-of-things-opens-at-chellaston-library/"
+    },
+    {
+     "date": "2026-09-10",
+     "title": "Hackney Council awards £1,500 grants to seven groups to run repair cafés",
+     "source": "Hackney Council",
+     "url": "https://news.hackney.gov.uk/news/hackney-council-marks-zero-waste-week-with-launch-of-repair-cafe-programme"
+    }
+   ],
+   "counter": [
+    {
+     "date": "2026-04-22",
+     "title": "Restart Project: under 2% of UK grant funding goes to reuse and repair",
+     "source": "The Restart Project",
+     "url": "https://therestartproject.org/news/why-are-we-asking-for-donations/",
+     "why": "The sector's core funding is thin, so civic hosting may not come with running costs."
+    },
+    {
+     "date": "2025-11-25",
+     "title": "Wales evaluation: £14m Circular Economy Fund exceeded target for repair and reuse hubs",
+     "source": "GOV.WALES",
+     "url": "https://www.gov.wales/repair-and-reuse-activities-evaluation-summary-html",
+     "why": "Wales' own evaluation warns community repair and lending isn't financially sustainable without ongoing revenue support."
+    }
+   ],
+   "counterNote": "",
+   "next": "Approach our local library service and housing association about hosting, and bid for running costs, not only set-up costs — Wales' evaluation is the evidence to cite.",
+   "change": "Move to Watch if council library budgets are cut in the next budget round, or if hosted schemes start closing when start-up grants end."
+  },
+  {
+   "id": "P8",
+   "name": "Repair demand outgrows its volunteers",
+   "from": "repair as a hobby run by a small, older group of volunteers",
+   "to": "mass, cost-of-living-driven demand, increasingly from young people, that unpaid volunteers can't meet",
+   "summary": "Demand for repair is broad and getting younger: most Londoners polled want to learn repair to save money, and retailers are chasing a Gen Z mending trend. But the people doing community repair are mostly older men, over-50s volunteering has fallen sharply, and the leading repair charity says the sector gets under 2% of grant funding. The network keeps growing anyway, which is why this is a squeeze rather than a collapse.",
+   "n": 5,
+   "scores": {
+    "momentum": 3,
+    "spread": 4,
+    "novelty": 3,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "steady across the whole window, no acceleration",
+    "spread": "surveys, academic research, charities, official data and retailers",
+    "novelty": "the volunteer decline is known; the young, money-driven demand side is less so",
+    "evidence": "large surveys (3,555 and 5,958 people) and official volunteering data"
+   },
+   "recommendation": "act",
+   "challenges": [
+    "A5"
+   ],
+   "signals": [
+    {
+     "date": "2025-02-26",
+     "title": "Londoners spent £3.24bn replacing items they believed were repairable",
+     "source": "ReLondon",
+     "url": "https://relondon.gov.uk/latest/londoners-spent-3-24-billion-in-2024-on-replacing-repairable-items-new-survey-reveals"
+    },
+    {
+     "date": "2025-05-09",
+     "title": "UCL citizen-science study maps UK household repair barriers",
+     "source": "Frontiers in Sustainability",
+     "url": "https://www.frontiersin.org/journals/sustainability/articles/10.3389/frsus.2025.1562615/full"
+    },
+    {
+     "date": "2025-10-20",
+     "title": "Over-50s formal volunteering down 1.16 million since 2019",
+     "source": "Centre for Ageing Better",
+     "url": "https://ageing-better.org.uk/news/110-million-lost-hours-volunteering"
+    },
+    {
+     "date": "2026-04-22",
+     "title": "Restart Project: under 2% of UK grant funding goes to reuse and repair",
+     "source": "The Restart Project",
+     "url": "https://therestartproject.org/news/why-are-we-asking-for-donations/"
+    },
+    {
+     "date": "2026-08-10",
+     "title": "Gen Z repair culture pulls in Levi's, Uniqlo, Primark and Zara",
+     "source": "Fortune",
+     "url": "https://fortune.com/2026/08/10/gen-z-analog-handstitching-repairing-clothes-second-hand-levis-uniqlo/"
+    }
+   ],
+   "counter": [
+    {
+     "date": "2026-09-10",
+     "title": "Repair Café network reaches 4,000 locations",
+     "source": "Repair Café International",
+     "url": "https://www.repaircafe.org/en/the-worlds-4000th-repair-cafe-is-in-canada/",
+     "why": "The global Repair Café network is still growing (4,000 locations), so volunteer pressure hasn't yet stopped expansion."
+    },
+    {
+     "date": "2025-12-16",
+     "title": "Restart's 2025 review: Fixfest, 441,068 logged repairs, first UK repair voucher",
+     "source": "The Restart Project",
+     "url": "https://therestartproject.org/news/our-top-12-moments-from-2025/",
+     "why": "Restart logged 441,068 repairs in 2025: the organised movement's output is still rising."
+    }
+   ],
+   "counterNote": "",
+   "next": "Design any hub or repair programme with paid coordination from the start, and recruit younger fixers deliberately (schools, colleges, the Gen Z mending crowd) rather than relying on the existing volunteer pool.",
+   "change": "Move down to Watch if next year's volunteering data shows over-50s participation recovering; move to urgent if a UK repair network reports closing sites for lack of volunteers."
+  },
+  {
+   "id": "P6",
+   "name": "Standalone rental struggles; big players absorb it",
+   "from": "rental and subscription startups as the commercial future of access over ownership",
+   "to": "rental surviving as a feature of large platforms and retailers, while independents restructure or merge",
+   "summary": "Commercial rental is proving hard to make pay. Europe's flagship tech-rental firm went through a court restructuring, the UK's best-known peer-to-peer rental site was folded into a Nordic brand, a traditional tool-hire firm's losses widened as it moved onto a rival's marketplace, and e-bike subscriptions are consolidating. Meanwhile B&Q and Castorama are adding tool rental in-store.",
+   "n": 5,
+   "scores": {
+    "momentum": 3,
+    "spread": 4,
+    "novelty": 4,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "a steady run of restructurings and mergers",
+    "spread": "Germany, the UK, the Netherlands and France; startups, incumbents and retailers",
+    "novelty": "cuts against the assumption that commercial rental will easily out-compete community schemes",
+    "evidence": "company filings, results and official announcements"
+   },
+   "recommendation": "research",
+   "challenges": [
+    "A6"
+   ],
+   "signals": [
+    {
+     "date": "2025-04-30",
+     "title": "Grover, Berlin tech-rental firm, forced through court restructuring",
+     "source": "Hengeler Mueller",
+     "url": "https://hengeler-news.com/en/articles/hengeler-mueller-advises-grover-on-financial-restructuring-via-starug-proceedings"
+    },
+    {
+     "date": "2025-10-02",
+     "title": "Fat Llama rebrands as Hygglo and cuts combined fees from ~50% to ~30%",
+     "source": "Hygglo Blog",
+     "url": "https://blog.hygglo.com/2025/10/02/fat-llama-will-become-hygglo-on-nov-24th-why-when-and-what/"
+    },
+    {
+     "date": "2025-11-26",
+     "title": "Speedy Hire losses widen; deal to supply HSS ProService marketplace goes live",
+     "source": "Construction Enquirer",
+     "url": "https://www.constructionenquirer.com/2025/11/26/speedy-looks-to-hss-proservice-deal-to-stem-losses/"
+    },
+    {
+     "date": "2026-03-24",
+     "title": "Kingfisher full-year results: tool rental expanding across B&Q and Castorama",
+     "source": "Kingfisher plc",
+     "url": "https://www.kingfisher.com/~/media/Files/K/Kingfisher-Plc/Universal/investors/result-reports-presentation/2026/2026-full-year-results-rns.pdf"
+    },
+    {
+     "date": "2026-05-18",
+     "title": "Swapfiets acquires Dance, creating Europe's largest e-bike subscription player",
+     "source": "Swapfiets Newsroom",
+     "url": "https://newsroom.swapfiets.com/Press-release/swapfiets-acquires-dance-to-solidify-european-leadership-in-e-bike-subscriptions"
+    }
+   ],
+   "counter": [],
+   "counterNote": "None in the log. A quick web search found only market-size projections from software vendors, not evidence of goods-rental businesses thriving.",
+   "next": "Check what retailer rental costs and covers locally (B&Q and hire counters), and whether a partnership — for example referrals for things we can't stock — is more useful than competition.",
+   "change": "Move to Act if a major UK retailer rolls rental out nationally; move to Watch if a well-funded rental startup shows sustained growth in the UK."
+  },
+  {
+   "id": "P7",
+   "name": "Does reuse really replace buying new?",
+   "from": "assuming repair, resale and sharing displace new purchases",
+   "to": "a measurable, contested question with evidence on both sides",
+   "summary": "WRAP's method puts displacement at about 82% for repaired clothes and 65% for resale. But a study of second-hand clothing buyers found new and used spending rising together, fast fashion is still growing fast in the UK, and people only see repair as worth it below 15–20% of the price of a new item. An academic quoted in mainstream coverage doubts retailer mending offsets overproduction.",
+   "n": 5,
+   "scores": {
+    "momentum": 3,
+    "spread": 3,
+    "novelty": 4,
+    "evidence": 3
+   },
+   "reasons": {
+    "momentum": "evenly spread through the window",
+    "spread": "research bodies, industry data and mainstream press",
+    "novelty": "challenges a claim at the heart of our impact case",
+    "evidence": "mixed: one rigorous UK method, one US sample, industry figures"
+   },
+   "recommendation": "research",
+   "challenges": [
+    "A7"
+   ],
+   "signals": [
+    {
+     "date": "2025-02-28",
+     "title": "WRAP: four in five repaired garments displace a new purchase",
+     "source": "Just Style",
+     "url": "https://www.just-style.com/news/wrap-report-resale-repair-models/"
+    },
+    {
+     "date": "2025-08-18",
+     "title": "Shein UK revenue up 32% to £2bn",
+     "source": "Fashion Dive",
+     "url": "https://www.fashiondive.com/news/shein-uk-revenue-up-32-percent/757911/"
+    },
+    {
+     "date": "2025-09-15",
+     "title": "Only one in three Britons fix broken appliances, seven-country study finds",
+     "source": "NIM",
+     "url": "https://www.nim.org/en/press/article/only-one-in-three-brits-fix-broken-appliances-and-smartphones-despite-soaring-costs-and-growing-e-waste-crisis"
+    },
+    {
+     "date": "2025-10-07",
+     "title": "Second-hand fashion buyers show fast-fashion behaviour",
+     "source": "Scientific Reports",
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12504660/"
+    },
+    {
+     "date": "2026-08-10",
+     "title": "Gen Z repair culture pulls in Levi's, Uniqlo, Primark and Zara",
+     "source": "Fortune",
+     "url": "https://fortune.com/2026/08/10/gen-z-analog-handstitching-repairing-clothes-second-hand-levis-uniqlo/"
+    }
+   ],
+   "counter": [],
+   "counterNote": "The pattern is itself about conflicting evidence: S03 supports high displacement; S13 and S17 cut against it.",
+   "next": "Don't claim purchases avoided without evidence. Build a simple 'what would you have done instead?' question into every loan and repair, and review the displacement literature before the next funding bid.",
+   "change": "Move to Act (on measurement) if a funder asks for displacement evidence; revise our impact claims if a UK study finds low displacement for tool lending specifically."
+  },
+  {
+   "id": "P9",
+   "name": "Waste money starts funding repair and sharing",
+   "from": "repair and sharing funded from climate, community or charitable budgets",
+   "to": "schemes paid for by waste budgets, waste companies and producer-responsibility money",
+   "summary": "A thread runs through several signals that were logged under different headings: Somerset's school repair course is paid for from recycling income, a waste company funds Library of Things' incubator, the UK's first repair voucher came through a waste authority, France's voucher is paid for by producers, and WRAP's textiles blueprint would use producer fees for reuse and repair. If this is real, waste and producer money may be a more durable funder than climate budgets — the tax-funded voucher schemes in P1 are the ones being cut.",
+   "n": 5,
+   "scores": {
+    "momentum": 3,
+    "spread": 4,
+    "novelty": 4,
+    "evidence": 3
+   },
+   "reasons": {
+    "momentum": "scattered across the window, no clear acceleration",
+    "spread": "a council, a waste company, a waste authority, a French producer scheme and WRAP",
+    "novelty": "cuts against our assumption that climate budgets are the main route",
+    "evidence": "each signal is solid, but the pattern linking them is our inference"
+   },
+   "recommendation": "research",
+   "challenges": [
+    "A2"
+   ],
+   "signals": [
+    {
+     "date": "2025-02-05",
+     "title": "UK schools pilot 12-week electronics repair course",
+     "source": "Somerset Council",
+     "url": "https://www.somerset.gov.uk/news/new-year-new-challenge-students-learn-repair-skills"
+    },
+    {
+     "date": "2025-04-14",
+     "title": "Library of Things secures Viridor funding for a UK sharing-library incubator",
+     "source": "Resource",
+     "url": "https://resourcemedia.eco/article/library-things-secures-20000-viridor-funding-uk-expansion"
+    },
+    {
+     "date": "2026-01-26",
+     "title": "France's Bonus Réparation passes 1.9 million repairs in three years",
+     "source": "ecosystem",
+     "url": "https://decouvrir.ecosystem.eco/actualites/bonus-reparation-3ans"
+    },
+    {
+     "date": "2026-01-28",
+     "title": "WRAP publishes UK textiles EPR blueprint prioritising reuse over recycling",
+     "source": "WRAP",
+     "url": "https://www.wrap.ngo/resources/report/uk-textiles-extended-producer-responsibility-blueprint"
+    },
+    {
+     "date": "2026-07-06",
+     "title": "North London Repair Voucher trial results: 1,254 vouchers redeemed",
+     "source": "The Restart Project",
+     "url": "https://therestartproject.org/repair-economy/north-london-repair-voucher-trial-results/"
+    }
+   ],
+   "counter": [],
+   "counterNote": "None found in the log, and a quick web search found nothing against it. But the pattern is our inference from signals logged under other headings, so treat it as a hypothesis to test.",
+   "next": "Find out who controls waste-prevention money locally (the waste disposal authority, the council's waste team, the producer-responsibility schemes) and whether lending or repair could qualify. A short piece of desk research and two phone calls would settle it.",
+   "change": "Move to Act if a UK waste authority commissions a lending or repair service. A search turned up one apparent commission, but its page no longer loads, so it isn't counted here."
+  },
+  {
+   "id": "P2",
+   "name": "EU hard-wires repair, minimally",
+   "from": "repair as manufacturer goodwill",
+   "to": "a legal obligation with data infrastructure in the EU — implemented unevenly and minimally",
+   "summary": "July 2026 brought three EU milestones: the Right to Repair Directive applying, a ban on destroying unsold clothes and shoes, and the Digital Product Passport registry going live. Apple has opened genuine-parts distribution to independent repairers in Europe. But few member states were ready, and Germany's draft law leaves spare-parts pricing undefined. Great Britain isn't bound by any of it.",
+   "n": 5,
+   "scores": {
+    "momentum": 5,
+    "spread": 3,
+    "novelty": 2,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "four strong signals in July 2026 alone",
+    "spread": "EU institutions, member states and one manufacturer",
+    "novelty": "widely expected",
+    "evidence": "official EU sources, minus one for minimal implementation"
+   },
+   "recommendation": "watch",
+   "challenges": [
+    "A4"
+   ],
+   "signals": [
+    {
+     "date": "2025-05-28",
+     "title": "Apple extends Self Service Repair to iPad and opens genuine-parts distribution in Europe",
+     "source": "Apple Newsroom UK",
+     "url": "https://www.apple.com/uk/newsroom/2025/05/apple-launches-self-service-repair-for-ipad-expands-repair-programs/"
+    },
+    {
+     "date": "2026-04-21",
+     "title": "Germany's Right to Repair transposition criticised over spare-parts pricing and weak repair fund",
+     "source": "Right to Repair Europe",
+     "url": "https://repair.eu/news/whats-going-on-with-the-right-to-repair-directive-transposition-in-germany/"
+    },
+    {
+     "date": "2026-07-17",
+     "title": "EU ban on destroying unsold clothes and shoes enters application",
+     "source": "European Commission",
+     "url": "https://environment.ec.europa.eu/news/ban-destruction-unsold-clothes-and-shoes-enters-application-2026-07-17_en"
+    },
+    {
+     "date": "2026-07-20",
+     "title": "EU Digital Product Passport Registry goes live",
+     "source": "European Commission",
+     "url": "https://single-market-economy.ec.europa.eu/news/digital-product-passport-registry-now-live-2026-07-20_en"
+    },
+    {
+     "date": "2026-07-30",
+     "title": "EU Right to Repair Directive: transposition deadline arrives with only a handful of states ready",
+     "source": "Right to Repair Europe",
+     "url": "https://repair.eu/news/the-right-to-repair-directive/"
+    }
+   ],
+   "counter": [],
+   "counterNote": "The minimal, uneven implementation (S33, S47) is part of the pattern. Nothing in the log suggests the EU is rolling these rules back.",
+   "next": "Track whether manufacturers extend EU parts access to the UK voluntarily, and use EU obligations as the benchmark in UK advocacy.",
+   "change": "Move to Act if the UK uses its new product-regulation powers to mirror the Directive."
+  },
+  {
+   "id": "P5",
+   "name": "Second-hand goes corporate",
+   "from": "second-hand as thrift shops and small online sellers",
+   "to": "a mainstream market run by a few large platforms and retailers",
+   "summary": "Vinted's revenue has passed €1bn, eBay has bought Depop, IKEA is bringing peer-to-peer resale to the UK, Currys runs about a million repairs a year and grew refurbished sales, and Back Market is adding repair. The counter-signals are about trust and supply, not demand: refurbished purchases lag stated interest, and used-phone growth has stalled on low trade-in rates.",
+   "n": 6,
+   "scores": {
+    "momentum": 4,
+    "spread": 4,
+    "novelty": 2,
+    "evidence": 4
+   },
+   "reasons": {
+    "momentum": "strong signals cluster in 2026",
+    "spread": "marketplaces, a furniture brand, an electricals retailer; several countries",
+    "novelty": "widely known",
+    "evidence": "company results and completed deals, minus one for unanswered supply-side counter-signals"
+   },
+   "recommendation": "watch",
+   "challenges": [],
+   "signals": [
+    {
+     "date": "2025-09-15",
+     "title": "Back Market forecasts €3bn GMV and launches repair platform in France, Germany, Spain",
+     "source": "Back Market",
+     "url": "https://www.backmarket.com/en-us/c/press-release/2025-business-growth"
+    },
+    {
+     "date": "2025-12-17",
+     "title": "Currys builds up its Newark repair and refurb hub",
+     "source": "Retail Gazette",
+     "url": "https://www.retailgazette.co.uk/blog/2025/12/currys-repair-centre/"
+    },
+    {
+     "date": "2026-04-09",
+     "title": "Vinted 2025 results: GMV up 47% to €10.8bn, revenue passes €1bn",
+     "source": "Vinted Newsroom",
+     "url": "https://company.vinted.com/newsroom/financial-results-2025"
+    },
+    {
+     "date": "2026-06-17",
+     "title": "UK consumers open to refurbished tech, but purchases lag awareness",
+     "source": "Green Retail World",
+     "url": "https://greenretail.world/2026/06/17/refurbished-electronics-uk-market-holds-untapped-growth-potential/"
+    },
+    {
+     "date": "2026-07-30",
+     "title": "Etsy completes sale of Depop to eBay for ~$1.4bn",
+     "source": "Etsy Investor Relations",
+     "url": "https://investors.etsy.com/news-events/press-releases/detail/224/etsy-completes-sale-of-depop"
+    },
+    {
+     "date": "2026-08-20",
+     "title": "IKEA to bring its \"Preowned\" peer-to-peer marketplace to the UK",
+     "source": "Green Retail World",
+     "url": "https://greenretail.world/2026/08/20/simplifying-access-to-pre-loved-ikea-preowned-marketplace-coming-to-uk/"
+    }
+   ],
+   "counter": [
+    {
+     "date": "2025-10-15",
+     "title": "Used-smartphone market in Europe grew only ~1% in H1 2025",
+     "source": "The Register",
+     "url": "https://www.theregister.com/2025/10/15/idc_counterpoint_smartphone_sales/",
+     "why": "Europe's used-smartphone market grew only about 1% in H1 2025."
+    },
+    {
+     "date": "2025-08-18",
+     "title": "Shein UK revenue up 32% to £2bn",
+     "source": "Fashion Dive",
+     "url": "https://www.fashiondive.com/news/shein-uk-revenue-up-32-percent/757911/",
+     "why": "Ultra-cheap new goods are growing fast too."
+    }
+   ],
+   "counterNote": "",
+   "next": "Watch for resale platforms moving into renting or lending. For now it's adjacent to our work, not in competition with it.",
+   "change": "Move to Research if a major resale platform launches rental or local collection points."
+  }
+ ],
+ "assumptions": [
+  {
+   "id": "A1",
+   "text": "Councils are actively funding local lending and repair",
+   "status": "supported",
+   "patterns": [
+    "P4",
+    "P1"
+   ]
+  },
+  {
+   "id": "A2",
+   "text": "Council climate budgets are the main public money for it",
+   "status": "challenged",
+   "patterns": [
+    "P9"
+   ]
+  },
+  {
+   "id": "A3",
+   "text": "Cost of living, more than green values, drives take-up",
+   "status": "supported",
+   "patterns": [
+    "P8",
+    "P1"
+   ]
+  },
+  {
+   "id": "A4",
+   "text": "Right-to-repair law will steadily make repair easier and cheaper in the UK",
+   "status": "challenged",
+   "patterns": [
+    "P2",
+    "P3"
+   ]
+  },
+  {
+   "id": "A5",
+   "text": "Volunteers can carry community lending and repair",
+   "status": "challenged",
+   "patterns": [
+    "P8"
+   ]
+  },
+  {
+   "id": "A6",
+   "text": "Commercial rental platforms are the main competitive threat to community lending",
+   "status": "challenged",
+   "patterns": [
+    "P6"
+   ]
+  },
+  {
+   "id": "A7",
+   "text": "Borrowing, repair and second-hand buying cut new purchases",
+   "status": "challenged",
+   "patterns": [
+    "P7"
+   ]
+  },
+  {
+   "id": "A8",
+   "text": "Demand for tool lending specifically is growing",
+   "status": "untested",
+   "patterns": []
+  }
+ ],
+ "outliers": [
+  {
+   "date": "2025-06-02",
+   "title": "Philips pilots \"Fixables\" free 3D-printable spare parts",
+   "source": "3DPrint.com",
+   "url": "https://3dprint.com/318446/philips-offers-the-right-to-repair-with-new-3d-printed-replacement-components-initiative/",
+   "why": "It would matter if manufacturers published printable spare parts at scale: community hubs could become local parts makers, not just repairers."
+  }
+ ]
+};
+/* ==================================================================== */
+
+const REC = {
+  act: { label: "Act", color: "var(--act)" },
+  research: { label: "Research", color: "var(--research)" },
+  watch: { label: "Watch", color: "var(--watch)" }
+};
+const $ = (id) => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const svgEl = (tag, attrs = {}, parent) => {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+};
+const h = (tag, attrs = {}, ...children) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === "class") e.className = v; else e.setAttribute(k, v); }
+  for (const c of children) e.append(c instanceof Node ? c : document.createTextNode(String(c ?? "")));
+  return e;
+};
+
+document.title = DATA.title;
+$("title").textContent = DATA.title;
+$("subtitle").textContent = DATA.subtitle;
+$("footer").textContent = DATA.footer || "";
+
+/* Legend */
+const legend = $("legend");
+for (const k of ["act", "research", "watch"]) {
+  const sw = h("i", { class: "sw" }); sw.style.background = REC[k].color;
+  legend.append(h("span", {}, sw, REC[k].label));
+}
+legend.append(h("span", {}, h("i", { class: "ring-key" }), "Challenges an assumption"));
+legend.append(h("span", {}, "Dot size = number of signals"));
+
+/* Chart: drawn at the container's real width so text and dots stay legible on phones */
+const svg = $("chart");
+const tip = $("tooltip");
+let W = 800;
+const hideTip = () => tip.classList.remove("show");
+function showTip(pt) {
+  const p = pt.p; tip.replaceChildren();
+  tip.append(h("div", { class: "t-name" }, `${p.id} — ${p.name}`));
+  const row = (k, v) => h("div", { class: "t-row" }, k, h("strong", {}, v));
+  tip.append(row("Signals", p.n), row("Momentum", p.scores.momentum), row("Spread", p.scores.spread),
+    row("Novelty", p.scores.novelty), row("Evidence", p.scores.evidence), row("Next step", REC[p.recommendation].label));
+  const wrap = $("chart-wrap").getBoundingClientRect(), k = svg.getBoundingClientRect().width / W;
+  let left = pt.x * k + 14, top = pt.y * k - 10;
+  if (left + 260 > wrap.width) left = pt.x * k - 274;
+  tip.style.left = Math.max(0, left) + "px"; tip.style.top = Math.max(0, top) + "px";
+  tip.classList.add("show");
+}
+function drawChart() {
+  W = Math.round(Math.min(800, Math.max(300, $("chart-wrap").clientWidth || 800)));
+  const narrow = W < 560;
+  const H = narrow ? Math.round(W * 1.0) : 480;
+  const M = narrow ? { t: 14, r: 12, b: 46, l: 40 } : { t: 16, r: 24, b: 52, l: 56 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  const sx = (v) => M.l + ((v - 0.5) / 5) * iw;
+  const sy = (v) => M.t + ih - ((v - 0.5) / 5) * ih;
+  svg.replaceChildren();
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  for (let v = 1; v <= 5; v++) {
+    svgEl("line", { class: "gridline", x1: sx(v), x2: sx(v), y1: M.t, y2: M.t + ih }, svg);
+    svgEl("line", { class: "gridline", x1: M.l, x2: M.l + iw, y1: sy(v), y2: sy(v) }, svg);
+    svgEl("text", { class: "tick", x: sx(v), y: M.t + ih + 18, "text-anchor": "middle" }, svg).textContent = v;
+    svgEl("text", { class: "tick", x: M.l - 10, y: sy(v) + 4, "text-anchor": "end" }, svg).textContent = v;
+  }
+  svgEl("line", { class: "axisline", x1: M.l, x2: M.l + iw, y1: M.t + ih, y2: M.t + ih }, svg);
+  svgEl("text", { class: "axis-title", x: M.l + iw / 2, y: H - 10, "text-anchor": "middle" }, svg).textContent = narrow ? "Momentum →" : "Momentum → evidence arriving faster";
+  svgEl("text", { class: "axis-title", transform: `translate(14 ${M.t + ih / 2}) rotate(-90)`, "text-anchor": "middle" }, svg).textContent = narrow ? "Novelty →" : "Novelty → further from what we assume";
+  if (!narrow) {
+    svgEl("text", { class: "quad-note", x: M.l + iw - 6, y: M.t + 14, "text-anchor": "end" }, svg).textContent = "Fast and surprising";
+    svgEl("text", { class: "quad-note", x: M.l + 6, y: M.t + 14 }, svg).textContent = "Early and surprising";
+    svgEl("text", { class: "quad-note", x: M.l + iw - 6, y: M.t + ih - 8, "text-anchor": "end" }, svg).textContent = "Fast and familiar";
+  }
+  /* Nudge tied dots apart so every one stays visible and hoverable */
+  const base = narrow ? 7 : 8, grow = narrow ? 2.4 : 3.2;
+  const pts = DATA.patterns.map((p) => ({ p, x: sx(p.scores.momentum), y: sy(p.scores.novelty), r: base + grow * Math.sqrt(p.n) }));
+  const groups = {};
+  pts.forEach((pt) => { const k = pt.x + "," + pt.y; (groups[k] = groups[k] || []).push(pt); });
+  Object.values(groups).forEach((g) => {
+    if (g.length < 2) return;
+    // Side by side in a row: keeps each dot on its true novelty line, and clear of the rows above and below
+    const step = 2 * (Math.max(...g.map((q) => q.r)) + 5) + 4;
+    g.forEach((q, i) => { q.x += (i - (g.length - 1) / 2) * step; });
+  });
+  pts.sort((a, b) => b.r - a.r).forEach((pt) => {
+    const g = svgEl("g", {}, svg);
+    const c = svgEl("circle", { class: "dot", cx: pt.x, cy: pt.y, r: pt.r, fill: REC[pt.p.recommendation].color,
+      tabindex: 0, role: "button", "aria-label": `${pt.p.id} ${pt.p.name}` }, g);
+    if (pt.p.challenges && pt.p.challenges.length) svgEl("circle", { class: "challenge-ring", cx: pt.x, cy: pt.y, r: pt.r + 5 }, g);
+    svgEl("text", { class: "dot-label", x: pt.x, y: pt.y + 4, "text-anchor": "middle" }, g).textContent = pt.p.id;
+    c.addEventListener("pointerenter", () => showTip(pt));
+    c.addEventListener("pointerleave", hideTip);
+    c.addEventListener("focus", () => showTip(pt));
+    c.addEventListener("blur", hideTip);
+    c.addEventListener("click", () => showCard(pt.p.id, true));
+    c.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showCard(pt.p.id, true); } });
+  });
+}
+drawChart();
+let resizeTimer;
+window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { hideTip(); drawChart(); }, 150); });
+
+/* Key: pattern names, in ID order */
+[...DATA.patterns].sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true })).forEach((p) => {
+  const sw = h("i", { class: "sw" }); sw.style.background = REC[p.recommendation].color;
+  const li = h("li", { tabindex: 0 }, sw, h("b", {}, p.id), p.name + (p.challenges?.length ? " ◌" : ""));
+  li.addEventListener("click", () => showCard(p.id, true));
+  li.addEventListener("keydown", (e) => { if (e.key === "Enter") showCard(p.id, true); });
+  $("key").append(li);
+});
+
+/* Card */
+function link(s) {
+  const a = h("a", { href: s.url, target: "_blank", rel: "noopener" }, s.source || s.url);
+  return h("li", {}, `${s.date ? s.date + " — " : ""}${s.title} (`, a, ")");
+}
+function showCard(id, scroll) {
+  const p = DATA.patterns.find((q) => q.id === id); if (!p) return;
+  const card = $("card"); card.replaceChildren();
+  const sw = h("i", { class: "sw" }); sw.style.background = REC[p.recommendation].color;
+  card.append(h("h2", {}, `${p.id} — ${p.name}`));
+  card.append(h("p", { class: "change" }, h("strong", {}, "From "), p.from, h("strong", {}, " to "), p.to, "."));
+  card.append(h("span", { class: "pill" }, sw, `Next step: ${REC[p.recommendation].label}`));
+  if (p.challenges?.length) card.append(" ", h("span", { class: "pill" }, h("i", { class: "ring-key" }), `Challenges ${p.challenges.join(", ")}`));
+  if (p.summary) card.append(h("p", { style: "margin:12px 0 0" }, p.summary));
+  const scores = h("div", { class: "scores" });
+  for (const k of ["momentum", "spread", "novelty", "evidence"]) {
+    scores.append(h("div", { class: "score" }, h("div", { class: "k" }, k[0].toUpperCase() + k.slice(1)),
+      h("div", { class: "v" }, p.scores[k]), h("div", { class: "why" }, p.reasons?.[k] || "")));
+  }
+  card.append(scores);
+  card.append(h("h3", {}, `Signals (${p.signals.length})`), h("ul", {}, ...p.signals.map(link)));
+  card.append(h("h3", {}, "Counter-signals"));
+  card.append(p.counter?.length ? h("ul", {}, ...p.counter.map((c) => { const li = link(c); if (c.why) li.append(` — ${c.why}`); return li; }))
+    : h("p", { style: "margin:0;color:var(--ink-2)" }, p.counterNote || "None found. The log's sources may be one-sided on this."));
+  if (p.next) card.append(h("h3", {}, "What to do"), h("p", { style: "margin:0" }, p.next));
+  if (p.change) card.append(h("h3", {}, "What would change this"), h("p", { style: "margin:0" }, p.change));
+  if (scroll) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+/* Table */
+const table = $("table");
+table.append(h("thead", {}, h("tr", {}, ...["", "Pattern", "Signals", "Mom.", "Spread", "Nov.", "Evid.", "Next step"].map((t) => h("th", {}, t)))));
+const tb = h("tbody");
+DATA.patterns.forEach((p) => {
+  const sw = h("i", { class: "sw" }); sw.style.background = REC[p.recommendation].color;
+  const tr = h("tr", { "data-id": p.id, tabindex: 0 },
+    h("td", {}, p.id), h("td", {}, p.name, p.challenges?.length ? " ◌" : ""),
+    ...["n", "momentum", "spread", "novelty", "evidence"].map((k) => h("td", { class: "num" }, k === "n" ? p.n : p.scores[k])),
+    h("td", {}, h("span", { style: "display:inline-flex;gap:6px;align-items:center" }, sw, REC[p.recommendation].label)));
+  tr.addEventListener("click", () => showCard(p.id, true));
+  tr.addEventListener("keydown", (e) => { if (e.key === "Enter") showCard(p.id, true); });
+  tb.append(tr);
+});
+table.append(tb);
+table.append(h("caption", { style: "caption-side:bottom;text-align:left;color:var(--muted);font-size:12px;padding-top:8px" }, "◌ challenges an assumption. Select a row for its card."));
+
+/* Assumptions and outliers */
+const at = $("assumptions");
+at.append(h("thead", {}, h("tr", {}, h("th", {}, "Assumption"), h("th", {}, "Status"), h("th", {}, "Patterns"))));
+const atb = h("tbody");
+const STATUS = { supported: "Supported", challenged: "Challenged", untested: "Untested" };
+(DATA.assumptions || []).forEach((a) => atb.append(h("tr", {}, h("td", {}, a.text),
+  h("td", { class: "status" }, (a.status === "challenged" ? "⚠ " : a.status === "supported" ? "✓ " : "? ") + STATUS[a.status]),
+  h("td", {}, (a.patterns || []).join(", ") || "—"))));
+at.append(atb);
+$("outliers").append(...(DATA.outliers || []).map((o) => {
+  const li = link(o); if (o.why) li.append(h("div", { style: "color:var(--ink-2);font-size:13px" }, o.why)); return li;
+}));
+
+showCard(DATA.patterns[0].id, false);
+</script>
+</body>
+</html>

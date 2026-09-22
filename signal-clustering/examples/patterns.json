@@ -1,0 +1,964 @@
+{
+  "topic": "Repair, reuse & sharing (UK & Europe)",
+  "run_date": "2026-09-23",
+  "previous_run_date": null,
+  "window": {
+    "from": "2025-02-05",
+    "to": "2026-09-10"
+  },
+  "signals": [
+    {
+      "id": "S01",
+      "date": "2025-02-05",
+      "title": "UK schools pilot 12-week electronics repair course",
+      "url": "https://www.somerset.gov.uk/news/new-year-new-challenge-students-learn-repair-skills",
+      "category": "Social",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P9"
+    },
+    {
+      "id": "S02",
+      "date": "2025-02-26",
+      "title": "Londoners spent £3.24bn replacing items they believed were repairable",
+      "url": "https://relondon.gov.uk/latest/londoners-spent-3-24-billion-in-2024-on-replacing-repairable-items-new-survey-reveals",
+      "category": "Social",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P8"
+    },
+    {
+      "id": "S03",
+      "date": "2025-02-28",
+      "title": "WRAP: four in five repaired garments displace a new purchase",
+      "url": "https://www.just-style.com/news/wrap-report-resale-repair-models/",
+      "category": "Environmental",
+      "type": "research",
+      "screen": "signal",
+      "pattern": "P7"
+    },
+    {
+      "id": "S04",
+      "date": "2025-04-01",
+      "title": "Library of Things opens two leisure-centre sites in Southwark",
+      "url": "https://www.southwark.gov.uk/news/2025/new-sharing-libraries-east-dulwich-and-elephant-and-castle",
+      "category": "Political",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P4"
+    },
+    {
+      "id": "S05",
+      "date": "2025-04-14",
+      "title": "Library of Things secures Viridor funding for a UK sharing-library incubator",
+      "url": "https://resourcemedia.eco/article/library-things-secures-20000-viridor-funding-uk-expansion",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P9"
+    },
+    {
+      "id": "S06",
+      "date": "2025-04-30",
+      "title": "Grover, Berlin tech-rental firm, forced through court restructuring",
+      "url": "https://hengeler-news.com/en/articles/hengeler-mueller-advises-grover-on-financial-restructuring-via-starug-proceedings",
+      "category": "Economic",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P6"
+    },
+    {
+      "id": "S07",
+      "date": "2025-05-07",
+      "title": "Share Shed wins £252k National Lottery grant for library of things and repair",
+      "url": "https://networkofwellbeing.org/2025/05/07/share-shed-awarded-national-lottery-grant-to-help-communities-share-repair-and-thrive/",
+      "category": "Economic",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P4"
+    },
+    {
+      "id": "S08",
+      "date": "2025-05-09",
+      "title": "UCL citizen-science study maps UK household repair barriers",
+      "url": "https://www.frontiersin.org/journals/sustainability/articles/10.3389/frsus.2025.1562615/full",
+      "category": "Social",
+      "type": "research",
+      "screen": "signal",
+      "pattern": "P8"
+    },
+    {
+      "id": "S09",
+      "date": "2025-05-28",
+      "title": "Apple extends Self Service Repair to iPad and opens genuine-parts distribution in Europe",
+      "url": "https://www.apple.com/uk/newsroom/2025/05/apple-launches-self-service-repair-for-ipad-expands-repair-programs/",
+      "category": "Technological",
+      "type": "product",
+      "screen": "signal",
+      "pattern": "P2"
+    },
+    {
+      "id": "S10",
+      "date": "2025-06-02",
+      "title": "Philips pilots \"Fixables\" free 3D-printable spare parts",
+      "url": "https://3dprint.com/318446/philips-offers-the-right-to-repair-with-new-3d-printed-replacement-components-initiative/",
+      "category": "Technological",
+      "type": "product",
+      "screen": "signal",
+      "pattern": null
+    },
+    {
+      "id": "S11",
+      "date": "2025-06-19",
+      "title": "Scottish Government delays decision on single-use cup charge until after 2026 election",
+      "url": "https://www.packagingnews.co.uk/news/environment/recycling/scottish-government-delays-decision-on-paper-cup-charge-until-after-2026-election-19-06-2025",
+      "category": "Political",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P3"
+    },
+    {
+      "id": "S12",
+      "date": "2025-07-21",
+      "title": "Product Regulation and Metrology Act 2025 receives Royal Assent",
+      "url": "https://www.legislation.gov.uk/ukpga/2025/20",
+      "category": "Legal",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P3"
+    },
+    {
+      "id": "S13",
+      "date": "2025-08-18",
+      "title": "Shein UK revenue up 32% to £2bn",
+      "url": "https://www.fashiondive.com/news/shein-uk-revenue-up-32-percent/757911/",
+      "category": "Economic",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P7"
+    },
+    {
+      "id": "S14",
+      "date": "2025-09-15",
+      "title": "Back Market forecasts €3bn GMV and launches repair platform in France, Germany, Spain",
+      "url": "https://www.backmarket.com/en-us/c/press-release/2025-business-growth",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S15",
+      "date": "2025-09-15",
+      "title": "Only one in three Britons fix broken appliances, seven-country study finds",
+      "url": "https://www.nim.org/en/press/article/only-one-in-three-brits-fix-broken-appliances-and-smartphones-despite-soaring-costs-and-growing-e-waste-crisis",
+      "category": "Social",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P7"
+    },
+    {
+      "id": "S16",
+      "date": "2025-10-02",
+      "title": "Fat Llama rebrands as Hygglo and cuts combined fees from ~50% to ~30%",
+      "url": "https://blog.hygglo.com/2025/10/02/fat-llama-will-become-hygglo-on-nov-24th-why-when-and-what/",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P6"
+    },
+    {
+      "id": "S17",
+      "date": "2025-10-07",
+      "title": "Second-hand fashion buyers show fast-fashion behaviour",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12504660/",
+      "category": "Social",
+      "type": "research",
+      "screen": "signal",
+      "pattern": "P7"
+    },
+    {
+      "id": "S18",
+      "date": "2025-10-15",
+      "title": "Used-smartphone market in Europe grew only ~1% in H1 2025",
+      "url": "https://www.theregister.com/2025/10/15/idc_counterpoint_smartphone_sales/",
+      "category": "Economic",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S19",
+      "date": "2025-10-20",
+      "title": "Over-50s formal volunteering down 1.16 million since 2019",
+      "url": "https://ageing-better.org.uk/news/110-million-lost-hours-volunteering",
+      "category": "Social",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P8"
+    },
+    {
+      "id": "S20",
+      "date": "2025-11-25",
+      "title": "Wales evaluation: £14m Circular Economy Fund exceeded target for repair and reuse hubs",
+      "url": "https://www.gov.wales/repair-and-reuse-activities-evaluation-summary-html",
+      "category": "Political",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P4"
+    },
+    {
+      "id": "S21",
+      "date": "2025-11-26",
+      "title": "Speedy Hire losses widen; deal to supply HSS ProService marketplace goes live",
+      "url": "https://www.constructionenquirer.com/2025/11/26/speedy-looks-to-hss-proservice-deal-to-stem-losses/",
+      "category": "Economic",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P6"
+    },
+    {
+      "id": "S22",
+      "date": "2025-12-10",
+      "title": "Austria's repair bonus returns scaled back: €130 cap, no smartphones or bikes",
+      "url": "https://help.orf.at/stories/3233288",
+      "category": "Political",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P1"
+    },
+    {
+      "id": "S23",
+      "date": "2025-12-16",
+      "title": "Restart's 2025 review: Fixfest, 441,068 logged repairs, first UK repair voucher",
+      "url": "https://therestartproject.org/news/our-top-12-moments-from-2025/",
+      "category": "Social",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P8"
+    },
+    {
+      "id": "S24",
+      "date": "2025-12-17",
+      "title": "Currys builds up its Newark repair and refurb hub",
+      "url": "https://www.retailgazette.co.uk/blog/2025/12/currys-repair-centre/",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S25",
+      "date": "2026-01-22",
+      "title": "Vinted launches in the US, starting with New York",
+      "url": "https://company.vinted.com/newsroom/vinted-launches-us-nyc-2",
+      "category": "Economic",
+      "type": "market",
+      "screen": "noise",
+      "pattern": null
+    },
+    {
+      "id": "S26",
+      "date": "2026-01-26",
+      "title": "France's Bonus Réparation passes 1.9 million repairs in three years",
+      "url": "https://decouvrir.ecosystem.eco/actualites/bonus-reparation-3ans",
+      "category": "Political",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P1"
+    },
+    {
+      "id": "S27",
+      "date": "2026-01-28",
+      "title": "WRAP publishes UK textiles EPR blueprint prioritising reuse over recycling",
+      "url": "https://www.wrap.ngo/resources/report/uk-textiles-extended-producer-responsibility-blueprint",
+      "category": "Political",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P3"
+    },
+    {
+      "id": "S28",
+      "date": "2026-02-26",
+      "title": "Berlin's repair bonus funds 14,000+ repairs as EU right-to-repair nears",
+      "url": "https://e360.yale.edu/features/europe-repair-cafes",
+      "category": "Political",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P1"
+    },
+    {
+      "id": "S29",
+      "date": "2026-03-20",
+      "title": "Restart opens Fixing Factories inside a library hub and a sewing project",
+      "url": "https://therestartproject.org/news/were-opening-two-new-fixing-factories-in-barking-and-victoria/",
+      "category": "Social",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P4"
+    },
+    {
+      "id": "S30",
+      "date": "2026-03-24",
+      "title": "Kingfisher full-year results: tool rental expanding across B&Q and Castorama",
+      "url": "https://www.kingfisher.com/~/media/Files/K/Kingfisher-Plc/Universal/investors/result-reports-presentation/2026/2026-full-year-results-rns.pdf",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P6"
+    },
+    {
+      "id": "S31",
+      "date": "2026-03-24",
+      "title": "Scotland publishes Circular Economy Strategy to 2045",
+      "url": "https://www.gov.scot/publications/circular-economy-strategy-scotland/",
+      "category": "Political",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P3"
+    },
+    {
+      "id": "S32",
+      "date": "2026-04-09",
+      "title": "Vinted 2025 results: GMV up 47% to €10.8bn, revenue passes €1bn",
+      "url": "https://company.vinted.com/newsroom/financial-results-2025",
+      "category": "Economic",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S33",
+      "date": "2026-04-21",
+      "title": "Germany's Right to Repair transposition criticised over spare-parts pricing and weak repair fund",
+      "url": "https://repair.eu/news/whats-going-on-with-the-right-to-repair-directive-transposition-in-germany/",
+      "category": "Legal",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P2"
+    },
+    {
+      "id": "S34",
+      "date": "2026-04-22",
+      "title": "Restart Project: under 2% of UK grant funding goes to reuse and repair",
+      "url": "https://therestartproject.org/news/why-are-we-asking-for-donations/",
+      "category": "Economic",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P8"
+    },
+    {
+      "id": "S35",
+      "date": "2026-04-29",
+      "title": "Frustration grows as Circular Economy Growth Plan delays continue",
+      "url": "https://www.letsrecycle.com/news/frustration-grows-as-circular-economy-growth-plan-delays-continue/",
+      "category": "Political",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P3"
+    },
+    {
+      "id": "S36",
+      "date": "2026-05-11",
+      "title": "Bundesrat rejects Thuringia's bid for a nationwide German repair bonus",
+      "url": "https://www.deutsche-handwerks-zeitung.de/bundesweiter-reparaturbonus-gescheitert-das-tut-sich-in-den-laendern-378638/",
+      "category": "Political",
+      "type": "counter",
+      "screen": "signal",
+      "pattern": "P1"
+    },
+    {
+      "id": "S37",
+      "date": "2026-05-18",
+      "title": "Swapfiets acquires Dance, creating Europe's largest e-bike subscription player",
+      "url": "https://newsroom.swapfiets.com/Press-release/swapfiets-acquires-dance-to-solidify-european-leadership-in-e-bike-subscriptions",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P6"
+    },
+    {
+      "id": "S38",
+      "date": "2026-06-17",
+      "title": "UK consumers open to refurbished tech, but purchases lag awareness",
+      "url": "https://greenretail.world/2026/06/17/refurbished-electronics-uk-market-holds-untapped-growth-potential/",
+      "category": "Social",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S39",
+      "date": "2026-07-03",
+      "title": "UK amends ecodesign regulations to keep recognising EU CE marks",
+      "url": "https://www.legislation.gov.uk/uksi/2026/750/made",
+      "category": "Legal",
+      "type": "policy",
+      "screen": "context",
+      "pattern": null
+    },
+    {
+      "id": "S40",
+      "date": "2026-07-06",
+      "title": "Community-run free bike share pilot at RHS Bridgewater",
+      "url": "https://zagdaily.com/micromobility/free-bike-share-scheme-launches-at-one-of-europes-largest-gardening-sites/",
+      "category": "Social",
+      "type": "civic",
+      "screen": "noise",
+      "pattern": null
+    },
+    {
+      "id": "S41",
+      "date": "2026-07-06",
+      "title": "North London Repair Voucher trial results: 1,254 vouchers redeemed",
+      "url": "https://therestartproject.org/repair-economy/north-london-repair-voucher-trial-results/",
+      "category": "Political",
+      "type": "data",
+      "screen": "signal",
+      "pattern": "P1"
+    },
+    {
+      "id": "S42",
+      "date": "2026-07-06",
+      "title": "North London repair voucher trial: 59% of users on incomes under £30k",
+      "url": "https://therestartproject.org/repair-economy/north-london-repair-voucher-trial-results/",
+      "category": "Political",
+      "type": "data",
+      "screen": "duplicate",
+      "pattern": null
+    },
+    {
+      "id": "S43",
+      "date": "2026-07-17",
+      "title": "EU ban on destroying unsold clothes and shoes enters application",
+      "url": "https://environment.ec.europa.eu/news/ban-destruction-unsold-clothes-and-shoes-enters-application-2026-07-17_en",
+      "category": "Legal",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P2"
+    },
+    {
+      "id": "S44",
+      "date": "2026-07-20",
+      "title": "EU Digital Product Passport Registry goes live",
+      "url": "https://single-market-economy.ec.europa.eu/news/digital-product-passport-registry-now-live-2026-07-20_en",
+      "category": "Technological",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P2"
+    },
+    {
+      "id": "S45",
+      "date": "2026-07-22",
+      "title": "New PM announces VAT cut on household electricity",
+      "url": "https://www.euronews.com/business/2026/07/22/new-uk-pm-touts-cost-of-living-government-with-vat-cut-and-bus-fare-cap",
+      "category": "Political",
+      "type": "policy",
+      "screen": "context",
+      "pattern": null
+    },
+    {
+      "id": "S46",
+      "date": "2026-07-28",
+      "title": "Repair campaigners ask new PM for zero VAT on repairs and funded repair vouchers",
+      "url": "https://talk.restarters.net/t/dear-andy-burnham/44343",
+      "category": "Political",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P1"
+    },
+    {
+      "id": "S47",
+      "date": "2026-07-30",
+      "title": "EU Right to Repair Directive: transposition deadline arrives with only a handful of states ready",
+      "url": "https://repair.eu/news/the-right-to-repair-directive/",
+      "category": "Legal",
+      "type": "policy",
+      "screen": "signal",
+      "pattern": "P2"
+    },
+    {
+      "id": "S48",
+      "date": "2026-07-30",
+      "title": "Etsy completes sale of Depop to eBay for ~$1.4bn",
+      "url": "https://investors.etsy.com/news-events/press-releases/detail/224/etsy-completes-sale-of-depop",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S49",
+      "date": "2026-08-10",
+      "title": "Gen Z repair culture pulls in Levi's, Uniqlo, Primark and Zara",
+      "url": "https://fortune.com/2026/08/10/gen-z-analog-handstitching-repairing-clothes-second-hand-levis-uniqlo/",
+      "category": "Values",
+      "type": "behaviour",
+      "screen": "signal",
+      "pattern": "P8"
+    },
+    {
+      "id": "S50",
+      "date": "2026-08-17",
+      "title": "Derby opens volunteer-run Library of Things in a public library",
+      "url": "https://derby.gov.uk/news/2026/august/derbys-new-library-of-things-opens-at-chellaston-library/",
+      "category": "Social",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P4"
+    },
+    {
+      "id": "S51",
+      "date": "2026-08-20",
+      "title": "IKEA to bring its \"Preowned\" peer-to-peer marketplace to the UK",
+      "url": "https://greenretail.world/2026/08/20/simplifying-access-to-pre-loved-ikea-preowned-marketplace-coming-to-uk/",
+      "category": "Economic",
+      "type": "market",
+      "screen": "signal",
+      "pattern": "P5"
+    },
+    {
+      "id": "S52",
+      "date": "2026-09-10",
+      "title": "Hackney Council awards £1,500 grants to seven groups to run repair cafés",
+      "url": "https://news.hackney.gov.uk/news/hackney-council-marks-zero-waste-week-with-launch-of-repair-cafe-programme",
+      "category": "Political",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P4"
+    },
+    {
+      "id": "S53",
+      "date": "2026-09-10",
+      "title": "Hackney funds seven repair cafés, including two estate tenants' groups",
+      "url": "https://news.hackney.gov.uk/news/hackney-council-marks-zero-waste-week-with-launch-of-repair-cafe-programme",
+      "category": "Political",
+      "type": "civic",
+      "screen": "duplicate",
+      "pattern": null
+    },
+    {
+      "id": "S54",
+      "date": "2026-09-10",
+      "title": "Repair Café network reaches 4,000 locations",
+      "url": "https://www.repaircafe.org/en/the-worlds-4000th-repair-cafe-is-in-canada/",
+      "category": "Social",
+      "type": "civic",
+      "screen": "signal",
+      "pattern": "P8"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "P1",
+      "name": "Repair vouchers spread, then get rationed",
+      "from": "repair subsidies as one country's experiment (France)",
+      "to": "a tool copied across Europe and now the UK, but repeatedly cut back when budgets bite",
+      "signals": [
+        "S22",
+        "S26",
+        "S28",
+        "S36",
+        "S46"
+      ],
+      "counter_signals": [
+        "S41"
+      ],
+      "scores": {
+        "momentum": 4,
+        "spread": 4,
+        "novelty": 3,
+        "evidence": 4
+      },
+      "recommendation": "act",
+      "challenges": [],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 4,
+            "spread": 4,
+            "novelty": 3,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "EU hard-wires repair, minimally",
+      "from": "repair as manufacturer goodwill",
+      "to": "a legal obligation with data infrastructure in the EU — implemented unevenly and minimally",
+      "signals": [
+        "S09",
+        "S33",
+        "S43",
+        "S44",
+        "S47"
+      ],
+      "counter_signals": [],
+      "scores": {
+        "momentum": 5,
+        "spread": 3,
+        "novelty": 2,
+        "evidence": 4
+      },
+      "recommendation": "watch",
+      "challenges": [
+        "A4"
+      ],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 5,
+            "spread": 3,
+            "novelty": 2,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "England stalls, the devolved nations move",
+      "from": "expecting a national circular-economy plan to set the direction",
+      "to": "a patchwork: Scotland and Wales publish and fund, while England's plan keeps slipping",
+      "signals": [
+        "S11",
+        "S20",
+        "S27",
+        "S31",
+        "S35"
+      ],
+      "counter_signals": [
+        "S12"
+      ],
+      "scores": {
+        "momentum": 3,
+        "spread": 2,
+        "novelty": 3,
+        "evidence": 4
+      },
+      "recommendation": "act",
+      "challenges": [
+        "A4"
+      ],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 3,
+            "spread": 2,
+            "novelty": 3,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "Lending and repair move into civic buildings",
+      "from": "standalone, volunteer-run projects in borrowed spaces",
+      "to": "services hosted in libraries, leisure centres, schools and estates, paid for by councils, lottery money and devolved governments",
+      "signals": [
+        "S04",
+        "S07",
+        "S29",
+        "S50",
+        "S52"
+      ],
+      "counter_signals": [
+        "S34",
+        "S20"
+      ],
+      "scores": {
+        "momentum": 3,
+        "spread": 4,
+        "novelty": 2,
+        "evidence": 4
+      },
+      "recommendation": "act",
+      "challenges": [],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 3,
+            "spread": 4,
+            "novelty": 2,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "name": "Second-hand goes corporate",
+      "from": "second-hand as thrift shops and small online sellers",
+      "to": "a mainstream market run by a few large platforms and retailers",
+      "signals": [
+        "S14",
+        "S24",
+        "S32",
+        "S38",
+        "S48",
+        "S51"
+      ],
+      "counter_signals": [
+        "S18",
+        "S13"
+      ],
+      "scores": {
+        "momentum": 4,
+        "spread": 4,
+        "novelty": 2,
+        "evidence": 4
+      },
+      "recommendation": "watch",
+      "challenges": [],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 6,
+          "scores": {
+            "momentum": 4,
+            "spread": 4,
+            "novelty": 2,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P6",
+      "name": "Standalone rental struggles; big players absorb it",
+      "from": "rental and subscription startups as the commercial future of access over ownership",
+      "to": "rental surviving as a feature of large platforms and retailers, while independents restructure or merge",
+      "signals": [
+        "S06",
+        "S16",
+        "S21",
+        "S30",
+        "S37"
+      ],
+      "counter_signals": [],
+      "scores": {
+        "momentum": 3,
+        "spread": 4,
+        "novelty": 4,
+        "evidence": 4
+      },
+      "recommendation": "research",
+      "challenges": [
+        "A6"
+      ],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 3,
+            "spread": 4,
+            "novelty": 4,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P7",
+      "name": "Does reuse really replace buying new?",
+      "from": "assuming repair, resale and sharing displace new purchases",
+      "to": "a measurable, contested question with evidence on both sides",
+      "signals": [
+        "S03",
+        "S13",
+        "S15",
+        "S17",
+        "S49"
+      ],
+      "counter_signals": [],
+      "scores": {
+        "momentum": 3,
+        "spread": 3,
+        "novelty": 4,
+        "evidence": 3
+      },
+      "recommendation": "research",
+      "challenges": [
+        "A7"
+      ],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 3,
+            "spread": 3,
+            "novelty": 4,
+            "evidence": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "P8",
+      "name": "Repair demand outgrows its volunteers",
+      "from": "repair as a hobby run by a small, older group of volunteers",
+      "to": "mass, cost-of-living-driven demand, increasingly from young people, that unpaid volunteers can't meet",
+      "signals": [
+        "S02",
+        "S08",
+        "S19",
+        "S34",
+        "S49"
+      ],
+      "counter_signals": [
+        "S54",
+        "S23"
+      ],
+      "scores": {
+        "momentum": 3,
+        "spread": 4,
+        "novelty": 3,
+        "evidence": 4
+      },
+      "recommendation": "act",
+      "challenges": [
+        "A5"
+      ],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 3,
+            "spread": 4,
+            "novelty": 3,
+            "evidence": 4
+          }
+        }
+      ]
+    },
+    {
+      "id": "P9",
+      "name": "Waste money starts funding repair and sharing",
+      "from": "repair and sharing funded from climate, community or charitable budgets",
+      "to": "schemes paid for by waste budgets, waste companies and producer-responsibility money",
+      "signals": [
+        "S01",
+        "S05",
+        "S26",
+        "S27",
+        "S41"
+      ],
+      "counter_signals": [],
+      "scores": {
+        "momentum": 3,
+        "spread": 4,
+        "novelty": 4,
+        "evidence": 3
+      },
+      "recommendation": "research",
+      "challenges": [
+        "A2"
+      ],
+      "status": "new",
+      "history": [
+        {
+          "run_date": "2026-09-23",
+          "signals": 5,
+          "scores": {
+            "momentum": 3,
+            "spread": 4,
+            "novelty": 4,
+            "evidence": 3
+          }
+        }
+      ]
+    }
+  ],
+  "outliers": [
+    "S10"
+  ],
+  "assumptions": [
+    {
+      "id": "A1",
+      "text": "Councils are actively funding local lending and repair",
+      "status": "supported",
+      "patterns": [
+        "P4",
+        "P1"
+      ]
+    },
+    {
+      "id": "A2",
+      "text": "Council climate budgets are the main public money for it",
+      "status": "challenged",
+      "patterns": [
+        "P9"
+      ]
+    },
+    {
+      "id": "A3",
+      "text": "Cost of living, more than green values, drives take-up",
+      "status": "supported",
+      "patterns": [
+        "P8",
+        "P1"
+      ]
+    },
+    {
+      "id": "A4",
+      "text": "Right-to-repair law will steadily make repair easier and cheaper in the UK",
+      "status": "challenged",
+      "patterns": [
+        "P2",
+        "P3"
+      ]
+    },
+    {
+      "id": "A5",
+      "text": "Volunteers can carry community lending and repair",
+      "status": "challenged",
+      "patterns": [
+        "P8"
+      ]
+    },
+    {
+      "id": "A6",
+      "text": "Commercial rental platforms are the main competitive threat to community lending",
+      "status": "challenged",
+      "patterns": [
+        "P6"
+      ]
+    },
+    {
+      "id": "A7",
+      "text": "Borrowing, repair and second-hand buying cut new purchases",
+      "status": "challenged",
+      "patterns": [
+        "P7"
+      ]
+    },
+    {
+      "id": "A8",
+      "text": "Demand for tool lending specifically is growing",
+      "status": "untested",
+      "patterns": []
+    }
+  ]
+}
